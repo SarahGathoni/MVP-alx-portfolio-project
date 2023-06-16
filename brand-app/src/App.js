@@ -10,8 +10,14 @@ function App() {
   const handleSubmit = (event) =>{
     event.preventDefault();
 
+    // Add user's message to chat log
     setChatlog((prevChatLog) => [...prevChatLog, {type: 'user', message:inputValue}]);
+
+
+    // Send user's message to the chatbot
     sendMessage(inputValue);
+
+    // Clear input value
     setInputValue('');
 
   };
@@ -29,6 +35,8 @@ function App() {
 
     axios.post(URL,data, {headers:headers}).then((response) => {
       console.log(response);
+
+      // Add bot's response to chat log
       setChatlog((prevChatLog) => [...prevChatLog, { type:'bot', message:response.data.choices[0].message.content }])
       setIsLoading(false)
     }).catch((error) =>{
