@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
 
@@ -12,6 +11,7 @@ function App() {
     event.preventDefault();
 
     setChatlog((prevChatLog) => [...prevChatLog, {type: 'user', message:inputValue}]);
+    sendMessage(inputValue);
     setInputValue('');
 
   };
@@ -27,10 +27,10 @@ function App() {
     }
     setIsLoading(true);
 
-    axios.post(url,data, {headers:headers}).then((response) => {
+    axios.post(URL,data, {headers:headers}).then((response) => {
       console.log(response);
-      setChatlog((prevChatLog) => [...prevChatLog, { type:'bot', message:response.data.choices[0].message.content }]
-      setIsLoading(false))
+      setChatlog((prevChatLog) => [...prevChatLog, { type:'bot', message:response.data.choices[0].message.content }])
+      setIsLoading(false)
     }).catch((error) =>{
         setIsLoading(false)
         console.log(error)
@@ -39,16 +39,26 @@ function App() {
   }
   return (
     <>
+      <div>
+        <div className='flex-grow p-6'></div>
+        <div className='flex flex-col space-y-4'></div>
+      </div>
       {
-        chatLog.map((message, index) => {
-          <div key='index'>message.message</div>
-
-        })
-      }
+        chatLog.map((message, index) => (
+          <div key={index} className={`flex ${
+            message.type === 'user' ? 'justify-end' : 'justify-start'
+            }`}>
+            <div className={`${
+              message.type === 'user' ? 'bg-white-500' : 'bg-gray-800'
+            } rounded-lg p-4 text-black max-w-sm`}>
+            {message.message}
+            </div>
+            </div>
+        ))}
       <form class="wrapper" onSubmit={handleSubmit}> 
         <h1>Brand-assi</h1>
         <p>tell me what your brand is about and <br></br>I'll generate keywords for you</p>
-        <input placeholder="cat kits"/><br></br>
+        <input placeholder="cat kits" value={inputValue} onChange={(e) => setInputValue(e.target.value)}/><br></br>
         <button>send</button>
       </form>
     </>
